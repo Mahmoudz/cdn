@@ -4,11 +4,12 @@
  * @author Mahmoud Zalt <mahmoud@vinelab.com>
  */
 
-use Vinelab\Cdn\Contracts\ProviderFactoryInterface;
+use Illuminate\Support\Facades\Request;
 use Vinelab\Cdn\Contracts\CdnFacadeInterface;
 use Vinelab\Cdn\Contracts\CdnHelperInterface;
 use Vinelab\Cdn\Validators\CdnFacadeValidator;
 use Vinelab\Cdn\Exceptions\EmptyPathException;
+use Vinelab\Cdn\Contracts\ProviderFactoryInterface;
 
 /**
  * Class CdnFacade
@@ -106,10 +107,12 @@ class CdnFacade implements CdnFacadeInterface{
      */
     private function generateUrl($path, $prepend = '')
     {
-        // if the package is surpassed, then return the same $path
-        // to load the asset from the localhost
+        // This ensures that an absolute path is always used in the asset
+        // url. Acknowledge that the Request facade is not the best
+        // way to fix this and this should be treated as a proof
+        // of concept rather than a concrete and complete fix.
         if ( isset($this->configurations['bypass']) and  $this->configurations['bypass'] )
-            return $path;
+            return Request::root() .'/'. $path;
 
         if ( ! isset($path))
             throw new EmptyPathException('Path does not exist.');
