@@ -72,7 +72,7 @@ php artisan vendor:publish vinelab/cdn
 This will create the file at `config/cdn.php`
 
 
-##### Default Storage Provider
+##### Default storage provider
 
 Currently only AWS S3 is supported for storing your assets remotely.
 
@@ -80,7 +80,7 @@ Currently only AWS S3 is supported for storing your assets remotely.
 'default' => 'AwsS3',
 ```
 
-##### CDN Provider Configuration
+##### CDN provider configuration
 
 The structure of your asset storage on S3 can be configured by modifying the following section of the `config/cdn.php` file:
 
@@ -99,7 +99,7 @@ The structure of your asset storage on S3 can be configured by modifying the fol
 ],
 ```
 
-###### Multiple Buckets
+###### Multiple Buckets on AWS S3
 
 You can also specify multiple buckets:
 
@@ -117,7 +117,7 @@ You can also specify multiple buckets:
 
 #### Files & Directories
 
-###### Include:
+###### Files to include:
 
 When uploading to S3 via the Artisan command (see below), you can specify which directories, file extensions and patterns you'd like to be uploaded:
 
@@ -129,7 +129,7 @@ When uploading to S3 via the Artisan command (see below), you can specify which 
 ],
 ```
 
-###### Exclude:
+###### Files to exclude:
 
 You can also specifiy what you'd like to be excluded:
 
@@ -143,15 +143,15 @@ You can also specifiy what you'd like to be excluded:
 ],
 ```
 
-##### URL
+##### CDN URL
 
-Set the CDN URL:
+The URL for your CDN can be set in the following location:
 
 ```php
 'url' => 'https://s3.amazonaws.com',
 ```
 
-##### Bypass
+##### Loading assets
 
 There may be occasions when you'd like to load your assets LOCALLY for testing or development purposes. To do this, just set the `bypass` option to `true`:
 
@@ -159,7 +159,7 @@ There may be occasions when you'd like to load your assets LOCALLY for testing o
 'bypass' => true,
 ```
 
-##### CloudFront Support
+##### CloudFront support
 
 If you use AWS CloudFront to serve your S3 assets over a CDN then you can modify the following section of the `config\cdn.php` file:
 
@@ -171,7 +171,7 @@ If you use AWS CloudFront to serve your S3 assets over a CDN then you can modify
 ```
 
 
-##### Other Configurations
+##### Other configurations
 
 You can also specify additional data for S3:
 
@@ -186,41 +186,41 @@ You can always refer to the AWS S3 Documentation for more details: [aws-sdk-php]
 
 ## Usage
 
-#### Push/Upload Assets
+#### Push/upload assets
 
 Assets can be pushed to CDN via the following command:
 ```bash
 php artisan cdn:push
 ```
-#### Empty/Remove Assets
+#### Empty/remove assets
 
 Assets on a CDN can also be emptied via the following command:
 ```bash
 php artisan cdn:empty
 ```
 
-#### Load Assets In Views
+#### Load assets in views
 
 To load assets from the CDN in your views, you can call the `Cdn::asset()` function.
 
 *Note: the `asset` works the same as the Laravel `Url::asset()` method and will look for assets in the `public/` directory:*
 
 ```blade
-{{ Cdn::asset('assets/js/main.js') }}          // Output: https://js-bucket.s3.amazonaws.com/public/assets/js/main.js
+{{ Cdn::asset('assets/js/main.js') }}     // Output: https://js-bucket.s3.amazonaws.com/public/assets/js/main.js
 
-{{ Cdn::asset('assets/css/style.css') }}       // Output: https://css-bucket.s3.amazonaws.com/public/assets/css/style.css
+{{ Cdn::asset('assets/css/style.css') }}  // Output: https://css-bucket.s3.amazonaws.com/public/assets/css/style.css
 ```
 
 To use a file from outside the `public/` directory, anywhere in the `app/` directory, you can use the `Cdn::path()` function:
 
 ```blade
-{{ Cdn::path('private/something/file.txt') }}  // Output: https://css-bucket.s3.amazonaws.com/private/something/file.txt
+{{ Cdn::path('private/file.txt') }}       // Output: https://css-bucket.s3.amazonaws.com/private/something/file.txt
 ```
 
 If you're using Laravel Elixir's Versioning function in your views, you can use it alongside the `Cdn::asset()` method:
 
 ```blade
-{{ Cdn::asset(elixir('css/all.css')) }}        // Output: https://static.sparejobs.io/public/build/css/all-1a73a6e76f.css
+{{ Cdn::asset(elixir('css/all.css')) }}   // Output: https://css-bucket.s3.amazonaws.com/public/build/css/all-1a73a6e76f.css
 ```
 
 ## Tests
