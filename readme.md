@@ -10,18 +10,20 @@
 
 ##### Content Delivery Network Package for Laravel
 
-The package provides the developer the ability to upload his assets (or any public file) to a CDN with a single artisan command.
-And then it allows him to switch between the local and the online version of the files.
+This package gives Laravel developers the ability to use their assets, stored on a Content Delivery Network (CDN), in their views. The package allows for assets to be pushed to a CDN via a single artisan command.
+The package is intelligent enough to allow developers to 'switch off' the CDN so that assets can be loaded into views locally, which helps for testing and development purposes.
 
 #### Laravel Support
-- For Laravel 5.1 use the latest realease (`master`).
-- For Laravel 4.2 use the realease `v1.0.1` [Last suport for L 4.2](https://github.com/Vinelab/cdn/releases/tag/v1.0.1)
+- For Laravel 5.1 use the latest release (`master`).
+- For Laravel 4.2 use the release `v1.0.1` (https://github.com/Vinelab/cdn/releases/tag/v1.0.1)
 
 ## Highlights
 
-- Amazon Web Services - S3
-- Artisan command to upload content to CDN
-- Simple Facade to access CDN assets
+- Connect to an Amazon Web Services (AWS) S3 bucket and load assets via AWS CloudFront
+- Simple Artisan commands to upload your assets to a CDN and remove them
+- Simple Facade to access CDN assets in your views
+- Ability to work alongside Laravel Elixir Versioning
+- Switch between loading your assets via a CDN and locally
 
 
 
@@ -35,9 +37,9 @@ Require `vinelab/cdn` in your project:
 composer require vinelab/cdn:*
 ```
 
-*Since this is a Laravel package we need to register the service provider:*
+#### Register the service provider
 
-Add the service provider to `config/app.php`:
+Since this is a Laravel package we need to register the service provider. You can add the service provider to `config/app.php`:
 
 ```php
 'providers' => array(
@@ -48,7 +50,9 @@ Add the service provider to `config/app.php`:
 
 ## Configuration
 
-Set the Credentials in the `.env` file.
+##### Environment variables
+
+If you're using AWS, set the Credentials in the `.env` file using the following two keys:
 
 *Note: you must have an `.env` file at the project root, to hold your sensitive information.*
 
@@ -57,21 +61,28 @@ AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
 ```
 
-Publish the package config file:
+##### Configuration file
+
+The configuration file can be publised by running the following command:
 
 ```bash
 php artisan vendor:publish vinelab/cdn
 ```
 
-You can find it at `config/cdn.php`
+This will create the file at `config/cdn.php`
 
 
-##### Default Provider
+##### Default Storage Provider
+
+Currently only AWS S3 is supported for storing your assets remotely.
+
 ```php
 'default' => 'AwsS3',
 ```
 
 ##### CDN Provider Configuration
+
+The structure of your asset storage on S3 can be configured by modifying the following section of the `config/cdn.php` file:
 
 ```php
 'aws' => [
@@ -90,13 +101,15 @@ You can find it at `config/cdn.php`
 
 ###### Multiple Buckets
 
+You can also specify multiple buckets:
+
 ```php
 'buckets' => [
 
     'my-default-bucket' => '*',
     
-    // 'js-bucket' => ['public/js'],
-    // 'css-bucket' => ['public/css'],
+    // 'js-bucket'      => ['public/js'],
+    // 'css-bucket'     => ['public/css'],
     // ...
 ]
 
@@ -106,7 +119,7 @@ You can find it at `config/cdn.php`
 
 ###### Include:
 
-Specify directories, extensions, files and patterns to be uploaded.
+When uploading to S3 via the Artisan command (see below), you can specify which directories, file extensions and patterns you'd like to be uploaded:
 
 ```php
 'include'    => [
@@ -118,7 +131,7 @@ Specify directories, extensions, files and patterns to be uploaded.
 
 ###### Exclude:
 
-Specify what to be ignored.
+You can also specifiy what you'd like to be excluded:
 
 ```php
 'exclude'    => [
@@ -140,23 +153,27 @@ Set the CDN URL:
 
 ##### Bypass
 
-To load your LOCAL assets for testing or during development, set the `bypass` option to `true`:
+There may be occasions when you'd like to load your assets LOCALLY for testing or development purposes. To do this, just set the `bypass` option to `true`:
 
 ```php
 'bypass' => true,
 ```
 
-##### Cloudfront Support
+##### CloudFront Support
+
+If you use AWS CloudFront to serve your S3 assets over a CDN then you can modify the following section of the `config\cdn.php` file:
 
 ```php
-'cloudfront'    => [
-    'use' => false,
+'cloudront'    => [
+    'use'     => false,
     'cdn_url' => ''
 ],
 ```
 
 
 ##### Other Configurations
+
+You can also specify additional data for S3:
 
 ```php
 'acl'           => 'public-read',
@@ -169,49 +186,44 @@ You can always refer to the AWS S3 Documentation for more details: [aws-sdk-php]
 
 ## Usage
 
-#### Push
+#### Push/Upload Assets
 
-Upload assets to CDN
+Assets can be pushed to CDN via the following command:
 ```bash
 php artisan cdn:push
 ```
-#### Empty
+#### Empty/Remove Assets
 
-Delete assets from CDN
+Assets on a CDN can also be emptied via the following command:
 ```bash
 php artisan cdn:empty
 ```
 
-#### Load Assets
+#### Load Assets In Views
 
-Use the facade `Cdn` to call the `Cdn::asset()` function.
+To load assets from the CDN in your views, you can call the `Cdn::asset()` function.
 
-*Note: the `asset` works the same as the Laravel `asset` it start looking for assets in the `public/` directory:*
-
-```blade
-{{Cdn::asset('assets/js/main.js')}}        // example result: https://js-bucket.s3.amazonaws.com/public/assets/js/main.js
-
-{{Cdn::asset('assets/css/style.css')}}        // example result: https://css-bucket.s3.amazonaws.com/public/assets/css/style.css
-```
-
-To use a file from outside the `public/` directory, anywhere in `app/` use the `Cdn::path()` function:
+*Note: the `asset` works the same as the Laravel `Url::asset()` method and will look for assets in the `public/` directory:*
 
 ```blade
-{{Cdn::path('private/something/file.txt')}}        // example result: https://css-bucket.s3.amazonaws.com/private/something/file.txt
+{{ Cdn::asset('assets/js/main.js') }}          // Output: https://js-bucket.s3.amazonaws.com/public/assets/js/main.js
+
+{{ Cdn::asset('assets/css/style.css') }}       // Output: https://css-bucket.s3.amazonaws.com/public/assets/css/style.css
 ```
 
+To use a file from outside the `public/` directory, anywhere in the `app/` directory, you can use the `Cdn::path()` function:
 
+```blade
+{{ Cdn::path('private/something/file.txt') }}  // Output: https://css-bucket.s3.amazonaws.com/private/something/file.txt
+```
 
+If you're using Laravel Elixir's Versioning function in your views, you can use it alongside the `Cdn::asset()` method:
 
+```blade
+{{ Cdn::asset(elixir('css/all.css')) }}        // Output: https://static.sparejobs.io/public/build/css/all-1a73a6e76f.css
+```
 
-
-
-
-
-
-
-
-## Test
+## Tests
 
 To run the tests, run the following command from the project folder.
 
@@ -221,7 +233,7 @@ $ ./vendor/bin/phpunit
 
 ## Support
 
-[On Github](https://github.com/Vinelab/cdn/issues)
+[Via Github](https://github.com/Vinelab/cdn/issues)
 
 
 ## Contributing
