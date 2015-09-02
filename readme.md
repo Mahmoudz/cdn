@@ -13,7 +13,7 @@
 This package gives Laravel developers the ability to use their assets, stored on a Content Delivery Network (CDN), in their views. The package allows for assets to be pushed to a CDN via a single artisan command.
 The package is intelligent enough to allow developers to 'switch off' the CDN so that assets can be loaded into views locally, which helps for testing and development purposes.
 
-#### Laravel Support
+##### Laravel Support
 - For Laravel 5.1 use the latest release (`master`).
 - For Laravel 4.2 use the release `v1.0.1` (https://github.com/Vinelab/cdn/releases/tag/v1.0.1)
 
