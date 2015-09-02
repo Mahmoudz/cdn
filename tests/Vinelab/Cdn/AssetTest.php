@@ -3,6 +3,7 @@
 namespace Vinelab\Cdn\Tests;
 
 use Mockery as M;
+use Vinelab\Cdn\Tests\TestCase;
 
 /**
  * Class AssetTest.
