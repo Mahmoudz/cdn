@@ -42,6 +42,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | CDN BASE DIRECTORY
+    |--------------------------------------------------------------------------
+    |
+    | Set CDN base dir path, if null, upload into bucket root
+    | Example: 'myapp1/assets', then you can access assets
+    | by url like https://my-bucket.name/myapp1/assets/file.jpg
+    |
+    */
+    'cdn_base_dir' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Threshold
     |--------------------------------------------------------------------------
     |

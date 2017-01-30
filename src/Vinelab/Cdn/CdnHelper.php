@@ -112,4 +112,35 @@ class CdnHelper implements CdnHelperInterface
     {
         return rtrim(ltrim($path, '/'), '/');
     }
+
+    /**
+     * Make path to local file copy on CDN, using cdn_base_dir
+     * @param string $localPath
+     * @return string
+     */
+    public function getCdnFilePath($localPath)
+    {
+        $baseDir = null;
+        $cfg = $this->getConfigurations();
+        $localPath = $this->normalizePath($localPath);
+
+        if (isset($cfg['cdn_base_dir'])) {
+            $baseDir = $cfg['cdn_base_dir'];
+        }
+
+        if (null === $baseDir) {
+            return $localPath;
+        }
+
+        return $this->cleanPath($baseDir).'/'.$this->cleanPath($localPath);
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    private function normalizePath($path)
+    {
+        return str_replace('\\', '/', $path);
+    }
 }

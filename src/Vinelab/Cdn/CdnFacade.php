@@ -150,7 +150,9 @@ class CdnFacade implements CdnFacadeInterface
 
         // remove slashes from begging and ending of the path
         // and append directories if needed
-        $clean_path = $prepend.$this->helper->cleanPath($path);
+        $clean_path = $this->helper->getCdnFilePath(
+            $prepend.$this->helper->cleanPath($path)
+        );
 
         // call the provider specific url generator
         return $this->provider->urlGenerator($clean_path);

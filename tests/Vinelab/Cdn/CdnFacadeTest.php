@@ -13,6 +13,8 @@ use Mockery as M;
  */
 class CdnFacadeTest extends TestCase
 {
+    const CDN_BASE_DIR = 'base';
+
     public function setUp()
     {
         parent::setUp();
@@ -21,6 +23,7 @@ class CdnFacadeTest extends TestCase
             'bypass' => false,
             'default' => 'AwsS3',
             'url' => 'https://s3.amazonaws.com',
+            'cdn_base_dir' => self::CDN_BASE_DIR,
             'threshold' => 10,
             'providers' => [
                 'aws' => [
@@ -66,6 +69,7 @@ class CdnFacadeTest extends TestCase
         $this->helper->shouldReceive('getConfigurations')->once()->andReturn($configuration_file);
         $this->helper->shouldReceive('cleanPath')->andReturn($this->asset_path);
         $this->helper->shouldReceive('startsWith')->andReturn(true);
+        $this->helper->shouldReceive('getCdnFilePath')->andReturn(self::CDN_BASE_DIR.'/'.$this->asset_path);
 
         $this->validator = new \Vinelab\Cdn\Validators\CdnFacadeValidator();
 

@@ -204,7 +204,7 @@ class AwsS3Provider extends Provider implements ProviderInterface
                         // the bucket name
                         'Bucket' => $this->getBucket(),
                         // the path of the file on the server (CDN)
-                        'Key' => str_replace('\\', '/', $file->getPathName()),
+                        'Key' => $this->cdn_helper->getCdnFilePath($file->getPathName()),
                         // the path of the path locally
                         'Body' => fopen($file->getRealPath(), 'r'),
                         // the permission of the file
@@ -214,8 +214,6 @@ class AwsS3Provider extends Provider implements ProviderInterface
                         'Metadata' => $this->default['providers']['aws']['s3']['metadata'],
                         'Expires' => $this->default['providers']['aws']['s3']['expires'],
                     ]);
-//                var_dump(get_class($command));exit();
-
 
                     $this->s3_client->execute($command);
                 } catch (S3Exception $e) {
@@ -395,7 +393,7 @@ class AwsS3Provider extends Provider implements ProviderInterface
         }
 
         $assets->transform(function($item, $key) use(&$filesOnAWS) {
-            $fileOnAWS = $filesOnAWS->get(str_replace('\\', '/', $item->getPathName()));
+            $fileOnAWS = $filesOnAWS->get($this->cdn_helper->getCdnFilePath($item->getPathName()));
 
             //select to upload files that are different in size AND last modified time.
             if(!($item->getMTime() === $fileOnAWS['LastModified']) && !($item->getSize() === $fileOnAWS['Size'])) {

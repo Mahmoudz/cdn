@@ -139,6 +139,13 @@ Set the CDN URL:
 'url' => 'https://s3.amazonaws.com',
 ```
 
+##### CDN Base Directory
+Set CDN base dir path, if null, upload assets into bucket root. 
+```php
+'cdn_base_dir' => null,
+```
+Example: 'myapp1/assets', then you can access assets by url like https://my-bucket.name/myapp1/assets/file.jpg
+
 ##### HTTP
 
 Set the HTTP parameters:

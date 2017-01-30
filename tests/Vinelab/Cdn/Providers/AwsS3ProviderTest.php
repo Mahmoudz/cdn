@@ -14,6 +14,8 @@ use Mockery as M;
  */
 class AwsS3ProviderTest extends TestCase
 {
+    const CDN_BASE_DIR = 'base';
+
     public function setUp()
     {
         parent::setUp();
@@ -33,6 +35,7 @@ class AwsS3ProviderTest extends TestCase
         $this->m_helper = M::mock('Vinelab\Cdn\CdnHelper');
         $this->m_helper->shouldReceive('parseUrl')
                        ->andReturn($this->pased_url);
+        $this->m_helper->shouldReceive('getCdnFilePath');
 
         $this->m_spl_file = M::mock('Symfony\Component\Finder\SplFileInfo');
         $this->m_spl_file->shouldReceive('getPathname')->andReturn('vinelab/cdn/tests/Vinelab/Cdn/AwsS3ProviderTest.php');
@@ -103,6 +106,7 @@ class AwsS3ProviderTest extends TestCase
         $configurations = [
             'default' => 'AwsS3',
             'url' => 'https://s3.amazonaws.com',
+            'cdn_base_dir' => self::CDN_BASE_DIR,
             'threshold' => 10,
             'providers' => [
                 'aws' => [

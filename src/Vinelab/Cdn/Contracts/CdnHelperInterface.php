@@ -18,4 +18,6 @@ interface CdnHelperInterface
     public function startsWith($haystack, $needle);
 
     public function cleanPath($path);
+
+    public function getCdnFilePath($localPath);
 }
