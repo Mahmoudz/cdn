@@ -10,8 +10,8 @@
 
 ##### Content Delivery Network Package for Laravel
 
-The package provides the developer the ability to upload his assets (or any public file) to a CDN with a single artisan command.
-And then it allows him to switch between the local and the online version of the files.
+The package provides the developer the ability to upload their assets (or any public file) to a CDN with a single artisan command.
+And then it allows them to switch between the local and the online version of the files.
 
 #### Laravel Support
 - For Laravel 5.1 use the latest realease (`master`).
