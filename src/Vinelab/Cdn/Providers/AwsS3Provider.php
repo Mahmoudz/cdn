@@ -204,7 +204,7 @@ class AwsS3Provider extends Provider implements ProviderInterface
                         // the bucket name
                         'Bucket' => $this->getBucket(),
                         // the path of the file on the server (CDN)
-                        'Key' => str_replace('\\', '/', $file->getPathName()),
+                        'Key' => str_replace('\\', '/', $file->getRelativePathname()),
                         // the path of the path locally
                         'Body' => fopen($file->getRealPath(), 'r'),
                         // the permission of the file
