@@ -118,14 +118,31 @@ class CdnFacade implements CdnFacadeInterface
      */
 	public function mix($path)
     {
-        static $manifest = null;
-        if (is_null($manifest)) {
-            $manifest = json_decode(file_get_contents(public_path('mix-manifest.json')), true);
+        static $manifests = [];
+
+        if (! starts_with($path, '/')) {
+            $path = "/{$path}";
         }
-        if (isset($manifest[$path])) {
-            return $this->generateUrl($manifest[$path], 'public/');
+
+        $manifestPath = public_path('/mix-manifest.json');
+
+        if (! isset($manifests[$manifestPath])) {
+            if (! file_exists($manifestPath)) {
+                throw new Exception('The Mix manifest does not exist.');
+            }
+
+            $manifests[$manifestPath] = json_decode(file_get_contents($manifestPath), true);
         }
-        throw new \InvalidArgumentException("File {$path} not defined in asset manifest.");
+
+        $manifest = $manifests[$manifestPath];
+
+        if (! isset($manifest[$path])) {
+            throw new \InvalidArgumentException(
+                "Unable to locate Mix file: {$path}. Please check your ".
+                'webpack.mix.js output paths and try again.'
+            );
+        }
+        return $this->generateUrl($manifest[$path], 'public/');
     }
 
     /**
