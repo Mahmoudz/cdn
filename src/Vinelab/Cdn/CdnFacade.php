@@ -78,10 +78,9 @@ class CdnFacade implements CdnFacadeInterface
      */
     public function asset($path)
     {
-        // if asset always append the public/ dir to the path (since the user should not add public/ to asset)
-        return $this->generateUrl($path, 'public/');
+        return $this->generateUrl($path);
     }
-	
+
 	/**
      * this function will be called from the 'views' using the
      * 'Cdn' facade {{Cdn::elixir('')}} to convert the elixir generated file path into
@@ -100,11 +99,11 @@ class CdnFacade implements CdnFacadeInterface
             $manifest = json_decode(file_get_contents(public_path('build/rev-manifest.json')), true);
         }
         if (isset($manifest[$path])) {
-            return $this->generateUrl('build/' . $manifest[$path], 'public/');
+            return $this->generateUrl('build/' . $manifest[$path]);
         }
         throw new \InvalidArgumentException("File {$path} not defined in asset manifest.");
     }
-	
+
 	/**
      * this function will be called from the 'views' using the
      * 'Cdn' facade {{Cdn::mix('')}} to convert the Laravel 5.4 webpack mix
@@ -142,7 +141,7 @@ class CdnFacade implements CdnFacadeInterface
                 'webpack.mix.js output paths and try again.'
             );
         }
-        return $this->generateUrl($manifest[$path], 'public/');
+        return $this->generateUrl($manifest[$path]);
     }
 
     /**
@@ -166,11 +165,10 @@ class CdnFacade implements CdnFacadeInterface
      * prepare the path before generating the url.
      *
      * @param        $path
-     * @param string $prepend
      *
      * @return mixed
      */
-    private function generateUrl($path, $prepend = '')
+    private function generateUrl($path)
     {
         // if the package is surpassed, then return the same $path
         // to load the asset from the localhost
@@ -191,7 +189,7 @@ class CdnFacade implements CdnFacadeInterface
 
         // remove slashes from begging and ending of the path
         // and append directories if needed
-        $clean_path = $prepend.$this->helper->cleanPath($path);
+        $clean_path = $this->helper->cleanPath($path);
 
         // call the provider specific url generator
         return $this->provider->urlGenerator($clean_path);
