@@ -50,6 +50,16 @@ class EmptyCommand extends Command
      *
      * @return mixed
      */
+    public function handle()
+    {
+        $this->fire();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
     public function fire()
     {
         $this->cdn->emptyBucket();
