@@ -204,7 +204,7 @@ class AwsS3Provider extends Provider implements ProviderInterface
                         // the bucket name
                         'Bucket' => $this->getBucket(),
                         // the path of the file on the server (CDN)
-                        'Key' => str_replace('\\', '/', $file->getPathName()),
+                        'Key' => str_replace('\\', '/', $file->getRelativePathname()),
                         // the path of the path locally
                         'Body' => fopen($file->getRealPath(), 'r'),
                         // the permission of the file
@@ -395,7 +395,7 @@ class AwsS3Provider extends Provider implements ProviderInterface
         }
 
         $assets->transform(function($item, $key) use(&$filesOnAWS) {
-            $fileOnAWS = $filesOnAWS->get(str_replace('\\', '/', $item->getPathName()));
+            $fileOnAWS = $filesOnAWS->get(str_replace('\\', '/', $item->getRelativePathname()));
 
             //select to upload files that are different in size AND last modified time.
             if(!($item->getMTime() === $fileOnAWS['LastModified']) && !($item->getSize() === $fileOnAWS['Size'])) {

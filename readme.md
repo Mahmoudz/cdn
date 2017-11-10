@@ -60,7 +60,7 @@ AWS_SECRET_ACCESS_KEY=
 Publish the package config file:
 
 ```bash
-php artisan vendor:publish vinelab/cdn
+php artisan vendor:publish --provider 'Vinelab\Cdn\CdnServiceProvider'
 ```
 
 You can find it at `config/cdn.php`
