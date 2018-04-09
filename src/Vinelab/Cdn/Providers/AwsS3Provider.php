@@ -384,7 +384,7 @@ class AwsS3Provider extends Provider implements ProviderInterface
             'Bucket' => $this->getBucket()
         ]);
 
-        if ((is_array($files) && !$contents['Contents']) || !$files->current()) {
+        if (empty($files) || !$files->current()) {
             //no files on bucket. lets upload everything found.
             return $assets;
         }
